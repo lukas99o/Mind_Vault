@@ -1,0 +1,49 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+out/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio / Rider / VS Code
+.vs/
+.idea/
+.vscode/
+
+# NuGet
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+
+# Logs
+*.log
+logs/
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]enchmarkDotNet.Artifacts/
+
+# ASP.NET Core / runtime-generated files
+wwwroot/lib/
+
+# Local config overrides (keep template appsettings*.json tracked)
+appsettings.Local.json
+appsettings.*.local.json
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Dotnet local tool cache
+.dotnet/tools/.store/
+
+# Local environment files
+.env
+.env.*
