@@ -47,3 +47,25 @@ desktop.ini
 # Local environment files
 .env
 .env.*
+
+# ============================================
+# Angular Frontend (.NET solution)
+# ============================================
+
+# Node dependencies - too large to commit, install via npm install
+node_modules/
+
+# Angular build output - compiled/minified code generated at build time
+dist/
+build/
+
+# Angular cache directory - stores compiled metadata and optimization data
+.angular/
+
+# npm/yarn lock files - optional but recommended to commit one for reproducible installs
+# Uncomment if you want to ignore lock files:
+# package-lock.json
+# yarn.lock
+
+# IDE-specific Angular extensions (generated, not needed in repo)
+.vscode/extensions.json
