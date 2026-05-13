@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Mind_Vault.Api.Data;
 using Mind_Vault.Api.Extensions;
+using Mind_Vault.Api.ErrorHandling;
 using Mind_Vault.Api.Models;
 using Mind_Vault.Api.Models.Dtos;
 using Mind_Vault.Api.Repositories;
@@ -82,6 +83,7 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.InvalidModelStateResponseFactory = context =>
@@ -126,6 +128,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseCors("AngularPolicy");
 

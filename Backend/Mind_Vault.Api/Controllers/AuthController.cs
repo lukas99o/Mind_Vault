@@ -34,7 +34,7 @@ public class AuthController : ControllerBase
         var existingUser = await _userManager.FindByEmailAsync(request.Email);
         if (existingUser is not null)
         {
-            return BadRequest(new { message = "Email is already in use." });
+            return BadRequest(new ApiErrorResponse(StatusCodes.Status400BadRequest, "Email is already in use."));
         }
 
         // Create new user entity
@@ -48,22 +48,16 @@ public class AuthController : ControllerBase
         var result = await _userManager.CreateAsync(user, request.Password);
         if (!result.Succeeded)
         {
-            return BadRequest(new
-            {
-                message = "Registration failed.",
-                errors = result.Errors.Select(e => e.Description)
-            });
+            var errors = result.Errors.ToDictionary(e => "IdentityError", e => new[] { e.Description });
+            return BadRequest(new ApiErrorResponse(StatusCodes.Status400BadRequest, "Registration failed.", errors));
         }
 
         // Assign User role to newly registered user
         var roleResult = await _userManager.AddToRoleAsync(user, "User");
         if (!roleResult.Succeeded)
         {
-            return BadRequest(new
-            {
-                message = "Failed to assign default role.",
-                errors = roleResult.Errors.Select(e => e.Description)
-            });
+            var errors = roleResult.Errors.ToDictionary(e => "IdentityError", e => new[] { e.Description });
+            return BadRequest(new ApiErrorResponse(StatusCodes.Status400BadRequest, "Failed to assign default role.", errors));
         }
 
         return Ok(new { message = "User registered successfully." });
@@ -76,14 +70,14 @@ public class AuthController : ControllerBase
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user is null)
         {
-            return Unauthorized(new { message = "Invalid email or password." });
+            return Unauthorized(new ApiErrorResponse(StatusCodes.Status401Unauthorized, "Invalid email or password."));
         }
 
         // Verify password without locking out account on failed attempts
         var signInResult = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: false);
         if (!signInResult.Succeeded)
         {
-            return Unauthorized(new { message = "Invalid email or password." });
+            return Unauthorized(new ApiErrorResponse(StatusCodes.Status401Unauthorized, "Invalid email or password."));
         }
 
         // Generate JWT token containing user claims and roles
