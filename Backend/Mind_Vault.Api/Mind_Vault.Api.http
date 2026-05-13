@@ -1,6 +1,88 @@
-@Mind_Vault.Api_HostAddress = http://localhost:5115
+@apiHostAddress = http://localhost:5115
+@jwtToken = REPLACE_WITH_JWT_TOKEN
 
-GET {{Mind_Vault.Api_HostAddress}}/weatherforecast/
+POST {{apiHostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+	"email": "demo.user@example.com",
+	"password": "Demo123!"
+}
+
+###
+
+POST {{apiHostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+	"email": "demo.user@example.com",
+	"password": "Demo123!"
+}
+
+###
+
+GET {{apiHostAddress}}/api/books
+Authorization: Bearer {{jwtToken}}
 Accept: application/json
 
 ###
+
+POST {{apiHostAddress}}/api/books
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+	"text": "Clean Architecture",
+	"author": "Robert C. Martin",
+	"publicationDate": "2017-09-20T00:00:00"
+}
+
+###
+
+PUT {{apiHostAddress}}/api/books/1
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+	"text": "Domain-Driven Design",
+	"author": "Eric Evans",
+	"publicationDate": "2003-08-30T00:00:00"
+}
+
+###
+
+DELETE {{apiHostAddress}}/api/books/1
+Authorization: Bearer {{jwtToken}}
+
+###
+
+GET {{apiHostAddress}}/api/quotes
+Authorization: Bearer {{jwtToken}}
+Accept: application/json
+
+###
+
+POST {{apiHostAddress}}/api/quotes
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+	"text": "First, solve the problem. Then, write the code.",
+	"author": "John Johnson"
+}
+
+###
+
+PUT {{apiHostAddress}}/api/quotes/1
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+	"text": "Programs must be written for people to read.",
+	"author": "Harold Abelson"
+}
+
+###
+
+DELETE {{apiHostAddress}}/api/quotes/1
+Authorization: Bearer {{jwtToken}}

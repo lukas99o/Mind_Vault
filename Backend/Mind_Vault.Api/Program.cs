@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Mind_Vault.Api.Models;
 using Mind_Vault.Api.Data;
+using Mind_Vault.Api.Models;
+using Mind_Vault.Api.Repositories;
+using Mind_Vault.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,11 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
     options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IQuoteRepository, QuoteRepository>();
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IQuoteService, QuoteService>();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
     {
