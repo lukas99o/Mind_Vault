@@ -15,7 +15,7 @@ public sealed class QuoteService : IQuoteService
 
     public async Task<PagedResponse<QuoteResponse>> GetAllAsync(string userId, QuoteQueryRequest request)
     {
-        var (items, totalCount) = await _quoteRepository.GetAllByUserIdAsync(userId, request);
+        var (items, totalCount) = await _quoteRepository.GetAllByIdAsync(userId, request);
         var responses = items.Select(MapToResponse).ToList();
         var totalPages = totalCount == 0 ? 0 : (int)Math.Ceiling(totalCount / (double)request.PageSize);
 
@@ -24,7 +24,7 @@ public sealed class QuoteService : IQuoteService
 
     public async Task<QuoteResponse?> GetByIdAsync(int id, string userId)
     {
-        var quote = await _quoteRepository.GetByIdAndUserIdAsync(id, userId);
+        var quote = await _quoteRepository.GetByIdAsync(id, userId);
         return quote is null ? null : MapToResponse(quote);
     }
 
@@ -45,7 +45,7 @@ public sealed class QuoteService : IQuoteService
 
     public async Task<bool> UpdateAsync(int id, string userId, QuoteUpdateRequest request)
     {
-        var quote = await _quoteRepository.GetByIdAndUserIdAsync(id, userId);
+        var quote = await _quoteRepository.GetByIdAsync(id, userId);
         if (quote is null)
         {
             return false;
@@ -60,7 +60,7 @@ public sealed class QuoteService : IQuoteService
 
     public async Task<bool> DeleteAsync(int id, string userId)
     {
-        var quote = await _quoteRepository.GetByIdAndUserIdAsync(id, userId);
+        var quote = await _quoteRepository.GetByIdAsync(id, userId);
         if (quote is null)
         {
             return false;

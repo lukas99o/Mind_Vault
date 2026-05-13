@@ -14,7 +14,7 @@ public sealed class BookRepository : IBookRepository
         _context = context;
     }
 
-    public async Task<(IReadOnlyList<Book> Items, int TotalCount)> GetAllByUserIdAsync(string userId, BookQueryRequest request)
+    public async Task<(IReadOnlyList<Book> Items, int TotalCount)> GetAllByIdAsync(string userId, BookQueryRequest request)
     {
         var query = _context.Books
             .Where(book => book.UserId == userId);
@@ -61,7 +61,7 @@ public sealed class BookRepository : IBookRepository
         return (items, totalCount);
     }
 
-    public Task<Book?> GetByIdAndUserIdAsync(int id, string userId)
+    public Task<Book?> GetByIdAsync(int id, string userId)
     {
         return _context.Books
             .FirstOrDefaultAsync(book => book.Id == id && book.UserId == userId);

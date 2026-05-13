@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Mind_Vault.Api.Data;
+using Mind_Vault.Api.Extensions;
 using Mind_Vault.Api.Models;
 using Mind_Vault.Api.Models.Dtos;
 using Mind_Vault.Api.Repositories;
@@ -115,6 +116,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// Seed roles and admin account
+await app.SeedAdminAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

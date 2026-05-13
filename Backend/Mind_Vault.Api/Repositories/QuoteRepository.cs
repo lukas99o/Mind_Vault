@@ -14,7 +14,7 @@ public sealed class QuoteRepository : IQuoteRepository
         _context = context;
     }
 
-    public async Task<(IReadOnlyList<Quote> Items, int TotalCount)> GetAllByUserIdAsync(string userId, QuoteQueryRequest request)
+    public async Task<(IReadOnlyList<Quote> Items, int TotalCount)> GetAllByIdAsync(string userId, QuoteQueryRequest request)
     {
         var query = _context.Quotes
             .Where(quote => quote.UserId == userId);
@@ -51,7 +51,7 @@ public sealed class QuoteRepository : IQuoteRepository
         return (items, totalCount);
     }
 
-    public Task<Quote?> GetByIdAndUserIdAsync(int id, string userId)
+    public Task<Quote?> GetByIdAsync(int id, string userId)
     {
         return _context.Quotes
             .FirstOrDefaultAsync(quote => quote.Id == id && quote.UserId == userId);

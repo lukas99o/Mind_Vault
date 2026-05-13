@@ -55,6 +55,17 @@ public class AuthController : ControllerBase
             });
         }
 
+        // Assign User role to newly registered user
+        var roleResult = await _userManager.AddToRoleAsync(user, "User");
+        if (!roleResult.Succeeded)
+        {
+            return BadRequest(new
+            {
+                message = "Failed to assign default role.",
+                errors = roleResult.Errors.Select(e => e.Description)
+            });
+        }
+
         return Ok(new { message = "User registered successfully." });
     }
 

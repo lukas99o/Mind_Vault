@@ -15,7 +15,7 @@ public sealed class BookService : IBookService
 
     public async Task<PagedResponse<BookResponse>> GetAllAsync(string userId, BookQueryRequest request)
     {
-        var (items, totalCount) = await _bookRepository.GetAllByUserIdAsync(userId, request);
+        var (items, totalCount) = await _bookRepository.GetAllByIdAsync(userId, request);
         var responses = items.Select(MapToResponse).ToList();
         var totalPages = totalCount == 0 ? 0 : (int)Math.Ceiling(totalCount / (double)request.PageSize);
 
@@ -24,7 +24,7 @@ public sealed class BookService : IBookService
 
     public async Task<BookResponse?> GetByIdAsync(int id, string userId)
     {
-        var book = await _bookRepository.GetByIdAndUserIdAsync(id, userId);
+        var book = await _bookRepository.GetByIdAsync(id, userId);
         return book is null ? null : MapToResponse(book);
     }
 
@@ -46,7 +46,7 @@ public sealed class BookService : IBookService
 
     public async Task<bool> UpdateAsync(int id, string userId, BookUpdateRequest request)
     {
-        var book = await _bookRepository.GetByIdAndUserIdAsync(id, userId);
+        var book = await _bookRepository.GetByIdAsync(id, userId);
         if (book is null)
         {
             return false;
@@ -62,7 +62,7 @@ public sealed class BookService : IBookService
 
     public async Task<bool> DeleteAsync(int id, string userId)
     {
-        var book = await _bookRepository.GetByIdAndUserIdAsync(id, userId);
+        var book = await _bookRepository.GetByIdAsync(id, userId);
         if (book is null)
         {
             return false;
