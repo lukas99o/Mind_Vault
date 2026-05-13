@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mind_Vault.Api.Models.Dtos;
@@ -9,7 +8,7 @@ namespace Mind_Vault.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class BooksController : ControllerBase
+public class BooksController : ApiControllerBase
 {
     private readonly IBookService _bookService;
 
@@ -19,15 +18,15 @@ public class BooksController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<BookResponse>>> GetAll()
+    public async Task<ActionResult<PagedResponse<BookResponse>>> GetAll([FromQuery] BookQueryRequest request)
     {
         var userId = GetCurrentUserId();
         if (userId is null)
         {
-            return Unauthorized();
+            return UnauthorizedError();
         }
 
-        var books = await _bookService.GetAllAsync(userId);
+        var books = await _bookService.GetAllAsync(userId, request);
         return Ok(books);
     }
 
@@ -37,13 +36,13 @@ public class BooksController : ControllerBase
         var userId = GetCurrentUserId();
         if (userId is null)
         {
-            return Unauthorized();
+            return UnauthorizedError();
         }
 
         var book = await _bookService.GetByIdAsync(id, userId);
         if (book is null)
         {
-            return NotFound();
+            return NotFoundError("Book was not found.");
         }
 
         return Ok(book);
@@ -55,7 +54,7 @@ public class BooksController : ControllerBase
         var userId = GetCurrentUserId();
         if (userId is null)
         {
-            return Unauthorized();
+            return UnauthorizedError();
         }
 
         var createdBook = await _bookService.CreateAsync(userId, request);
@@ -68,13 +67,13 @@ public class BooksController : ControllerBase
         var userId = GetCurrentUserId();
         if (userId is null)
         {
-            return Unauthorized();
+            return UnauthorizedError();
         }
 
         var wasUpdated = await _bookService.UpdateAsync(id, userId, request);
         if (!wasUpdated)
         {
-            return NotFound();
+            return NotFoundError("Book was not found.");
         }
 
         return NoContent();
@@ -86,21 +85,15 @@ public class BooksController : ControllerBase
         var userId = GetCurrentUserId();
         if (userId is null)
         {
-            return Unauthorized();
+            return UnauthorizedError();
         }
 
         var wasDeleted = await _bookService.DeleteAsync(id, userId);
         if (!wasDeleted)
         {
-            return NotFound();
+            return NotFoundError("Book was not found.");
         }
 
         return NoContent();
-    }
-
-    private string? GetCurrentUserId()
-    {
-        // NameIdentifier is set when the JWT token is created.
-        return User.FindFirstValue(ClaimTypes.NameIdentifier);
     }
 }

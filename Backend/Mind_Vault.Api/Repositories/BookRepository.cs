@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Mind_Vault.Api.Data;
 using Mind_Vault.Api.Models;
+using Mind_Vault.Api.Models.Dtos;
 
 namespace Mind_Vault.Api.Repositories;
 
@@ -13,12 +14,51 @@ public sealed class BookRepository : IBookRepository
         _context = context;
     }
 
-    public Task<List<Book>> GetAllByUserIdAsync(string userId)
+    public async Task<(IReadOnlyList<Book> Items, int TotalCount)> GetAllByUserIdAsync(string userId, BookQueryRequest request)
     {
-        return _context.Books
-            .Where(book => book.UserId == userId)
-            .OrderByDescending(book => book.PublicationDate)
+        var query = _context.Books
+            .Where(book => book.UserId == userId);
+
+        if (!string.IsNullOrWhiteSpace(request.Author))
+        {
+            query = query.Where(book => book.Author.Contains(request.Author));
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.SearchText))
+        {
+            query = query.Where(book => book.Text.Contains(request.SearchText));
+        }
+
+        if (request.PublicationDateFrom.HasValue)
+        {
+            query = query.Where(book => book.PublicationDate >= request.PublicationDateFrom.Value);
+        }
+
+        if (request.PublicationDateTo.HasValue)
+        {
+            query = query.Where(book => book.PublicationDate <= request.PublicationDateTo.Value);
+        }
+
+        query = request.SortBy.ToLowerInvariant() switch
+        {
+            "author" => request.SortDescending
+                ? query.OrderByDescending(book => book.Author).ThenByDescending(book => book.Id)
+                : query.OrderBy(book => book.Author).ThenBy(book => book.Id),
+            "text" => request.SortDescending
+                ? query.OrderByDescending(book => book.Text).ThenByDescending(book => book.Id)
+                : query.OrderBy(book => book.Text).ThenBy(book => book.Id),
+            _ => request.SortDescending
+                ? query.OrderByDescending(book => book.PublicationDate).ThenByDescending(book => book.Id)
+                : query.OrderBy(book => book.PublicationDate).ThenBy(book => book.Id)
+        };
+
+        var totalCount = await query.CountAsync();
+        var items = await query
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
             .ToListAsync();
+
+        return (items, totalCount);
     }
 
     public Task<Book?> GetByIdAndUserIdAsync(int id, string userId)

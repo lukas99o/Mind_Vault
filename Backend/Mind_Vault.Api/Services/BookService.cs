@@ -13,10 +13,13 @@ public sealed class BookService : IBookService
         _bookRepository = bookRepository;
     }
 
-    public async Task<IReadOnlyList<BookResponse>> GetAllAsync(string userId)
+    public async Task<PagedResponse<BookResponse>> GetAllAsync(string userId, BookQueryRequest request)
     {
-        var books = await _bookRepository.GetAllByUserIdAsync(userId);
-        return books.Select(MapToResponse).ToList();
+        var (items, totalCount) = await _bookRepository.GetAllByUserIdAsync(userId, request);
+        var responses = items.Select(MapToResponse).ToList();
+        var totalPages = totalCount == 0 ? 0 : (int)Math.Ceiling(totalCount / (double)request.PageSize);
+
+        return new PagedResponse<BookResponse>(responses, request.PageNumber, request.PageSize, totalCount, totalPages);
     }
 
     public async Task<BookResponse?> GetByIdAsync(int id, string userId)

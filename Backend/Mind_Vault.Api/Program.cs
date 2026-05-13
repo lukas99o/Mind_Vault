@@ -1,10 +1,12 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Mind_Vault.Api.Data;
 using Mind_Vault.Api.Models;
+using Mind_Vault.Api.Models.Dtos;
 using Mind_Vault.Api.Repositories;
 using Mind_Vault.Api.Services;
 
@@ -48,6 +50,23 @@ builder.Services.AddAuthentication(options =>
     {
         options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
         options.SaveToken = true;
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = async context =>
+            {
+                if (context.Response.HasStarted)
+                {
+                    return;
+                }
+
+                context.HandleResponse();
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                context.Response.ContentType = "application/json";
+
+                await context.Response.WriteAsJsonAsync(
+                    new ApiErrorResponse(StatusCodes.Status401Unauthorized, "Authentication is required."));
+            }
+        };
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -62,6 +81,20 @@ builder.Services.AddAuthentication(options =>
     });
 
 builder.Services.AddAuthorization();
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(entry => entry.Value?.Errors.Count > 0)
+            .ToDictionary(
+                entry => entry.Key,
+                entry => entry.Value!.Errors.Select(error => string.IsNullOrWhiteSpace(error.ErrorMessage) ? "The value is invalid." : error.ErrorMessage).ToArray());
+
+        return new BadRequestObjectResult(
+            new ApiErrorResponse(StatusCodes.Status400BadRequest, "Validation failed.", errors));
+    };
+});
 
 var angularOrigin = builder.Configuration["Cors:AngularOrigin"]
     ?? throw new InvalidOperationException("Missing Cors:AngularOrigin configuration.");

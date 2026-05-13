@@ -27,6 +27,30 @@ Accept: application/json
 
 ###
 
+GET {{apiHostAddress}}/api/books?pageNumber=1&pageSize=5&author=Martin&sortBy=author&sortDescending=false
+Authorization: Bearer {{jwtToken}}
+Accept: application/json
+
+###
+
+GET {{apiHostAddress}}/api/books?pageNumber=1&pageSize=5&searchText=Architecture&publicationDateFrom=2000-01-01&publicationDateTo=2020-12-31
+Authorization: Bearer {{jwtToken}}
+Accept: application/json
+
+###
+
+GET {{apiHostAddress}}/api/books?pageNumber=0&pageSize=101
+Authorization: Bearer {{jwtToken}}
+Accept: application/json
+
+###
+
+GET {{apiHostAddress}}/api/books?publicationDateFrom=2025-01-01&publicationDateTo=2024-01-01
+Authorization: Bearer {{jwtToken}}
+Accept: application/json
+
+###
+
 POST {{apiHostAddress}}/api/books
 Authorization: Bearer {{jwtToken}}
 Content-Type: application/json
@@ -57,6 +81,24 @@ Authorization: Bearer {{jwtToken}}
 ###
 
 GET {{apiHostAddress}}/api/quotes
+Authorization: Bearer {{jwtToken}}
+Accept: application/json
+
+###
+
+GET {{apiHostAddress}}/api/quotes?pageNumber=1&pageSize=5&author=Johnson&sortBy=author&sortDescending=false
+Authorization: Bearer {{jwtToken}}
+Accept: application/json
+
+###
+
+GET {{apiHostAddress}}/api/quotes?pageNumber=1&pageSize=5&searchText=problem&sortBy=text&sortDescending=true
+Authorization: Bearer {{jwtToken}}
+Accept: application/json
+
+###
+
+GET {{apiHostAddress}}/api/quotes?pageNumber=0&pageSize=101
 Authorization: Bearer {{jwtToken}}
 Accept: application/json
 

@@ -13,10 +13,13 @@ public sealed class QuoteService : IQuoteService
         _quoteRepository = quoteRepository;
     }
 
-    public async Task<IReadOnlyList<QuoteResponse>> GetAllAsync(string userId)
+    public async Task<PagedResponse<QuoteResponse>> GetAllAsync(string userId, QuoteQueryRequest request)
     {
-        var quotes = await _quoteRepository.GetAllByUserIdAsync(userId);
-        return quotes.Select(MapToResponse).ToList();
+        var (items, totalCount) = await _quoteRepository.GetAllByUserIdAsync(userId, request);
+        var responses = items.Select(MapToResponse).ToList();
+        var totalPages = totalCount == 0 ? 0 : (int)Math.Ceiling(totalCount / (double)request.PageSize);
+
+        return new PagedResponse<QuoteResponse>(responses, request.PageNumber, request.PageSize, totalCount, totalPages);
     }
 
     public async Task<QuoteResponse?> GetByIdAsync(int id, string userId)

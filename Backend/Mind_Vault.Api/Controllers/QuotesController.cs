@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mind_Vault.Api.Models.Dtos;
@@ -9,7 +8,7 @@ namespace Mind_Vault.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class QuotesController : ControllerBase
+public class QuotesController : ApiControllerBase
 {
     private readonly IQuoteService _quoteService;
 
@@ -19,15 +18,15 @@ public class QuotesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<QuoteResponse>>> GetAll()
+    public async Task<ActionResult<PagedResponse<QuoteResponse>>> GetAll([FromQuery] QuoteQueryRequest request)
     {
         var userId = GetCurrentUserId();
         if (userId is null)
         {
-            return Unauthorized();
+            return UnauthorizedError();
         }
 
-        var quotes = await _quoteService.GetAllAsync(userId);
+        var quotes = await _quoteService.GetAllAsync(userId, request);
         return Ok(quotes);
     }
 
@@ -37,13 +36,13 @@ public class QuotesController : ControllerBase
         var userId = GetCurrentUserId();
         if (userId is null)
         {
-            return Unauthorized();
+            return UnauthorizedError();
         }
 
         var quote = await _quoteService.GetByIdAsync(id, userId);
         if (quote is null)
         {
-            return NotFound();
+            return NotFoundError("Quote was not found.");
         }
 
         return Ok(quote);
@@ -55,7 +54,7 @@ public class QuotesController : ControllerBase
         var userId = GetCurrentUserId();
         if (userId is null)
         {
-            return Unauthorized();
+            return UnauthorizedError();
         }
 
         var createdQuote = await _quoteService.CreateAsync(userId, request);
@@ -68,13 +67,13 @@ public class QuotesController : ControllerBase
         var userId = GetCurrentUserId();
         if (userId is null)
         {
-            return Unauthorized();
+            return UnauthorizedError();
         }
 
         var wasUpdated = await _quoteService.UpdateAsync(id, userId, request);
         if (!wasUpdated)
         {
-            return NotFound();
+            return NotFoundError("Quote was not found.");
         }
 
         return NoContent();
@@ -86,21 +85,15 @@ public class QuotesController : ControllerBase
         var userId = GetCurrentUserId();
         if (userId is null)
         {
-            return Unauthorized();
+            return UnauthorizedError();
         }
 
         var wasDeleted = await _quoteService.DeleteAsync(id, userId);
         if (!wasDeleted)
         {
-            return NotFound();
+            return NotFoundError("Quote was not found.");
         }
 
         return NoContent();
-    }
-
-    private string? GetCurrentUserId()
-    {
-        // NameIdentifier is set when the JWT token is created.
-        return User.FindFirstValue(ClaimTypes.NameIdentifier);
     }
 }
