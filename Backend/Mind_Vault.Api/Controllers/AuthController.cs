@@ -13,6 +13,8 @@ namespace Mind_Vault.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
+    private static readonly TimeSpan TokenLifetime = TimeSpan.FromHours(48);
+
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IConfiguration _configuration;
@@ -82,7 +84,7 @@ public class AuthController : ControllerBase
 
         // Generate JWT token containing user claims and roles
         var token = await CreateJwtTokenAsync(user);
-        return Ok(new AuthResponse(token, DateTime.UtcNow.AddHours(1)));
+        return Ok(new AuthResponse(token, DateTime.UtcNow.Add(TokenLifetime)));
     }
 
     private async Task<string> CreateJwtTokenAsync(ApplicationUser user)
@@ -114,7 +116,7 @@ public class AuthController : ControllerBase
         // Configure token signing with symmetric key
         var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var credentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
-        var expires = DateTime.UtcNow.AddHours(48);
+        var expires = DateTime.UtcNow.Add(TokenLifetime);
 
         // Create and sign the token
         var tokenDescriptor = new JwtSecurityToken(

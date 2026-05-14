@@ -93,6 +93,11 @@ public class AdminUsersController : ApiControllerBase
             return NotFoundError("User was not found.");
         }
 
+        if (string.Equals(id, GetCurrentUserId(), StringComparison.Ordinal))
+        {
+            return BadRequest(new ApiErrorResponse(StatusCodes.Status400BadRequest, "You cannot delete your own account."));
+        }
+
         var result = await _userManager.DeleteAsync(user);
 
         if (!result.Succeeded)
