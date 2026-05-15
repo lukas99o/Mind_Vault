@@ -37,11 +37,10 @@ public sealed class BookServiceTests
         response.TotalCount.Should().Be(5);
         response.TotalPages.Should().Be(3);
         response.Items.Should().BeEquivalentTo(
-            new[]
-            {
+            [
                 new BookResponse(1, "Text 1", "Author A", new DateTime(2024, 1, 2)),
                 new BookResponse(2, "Text 2", "Author B", new DateTime(2024, 2, 3))
-            });
+            ]);
     }
 
     [Fact]
