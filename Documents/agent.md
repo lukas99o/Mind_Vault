@@ -1,17 +1,15 @@
 # Frontend (Angular 20)
 
-Arkitektur: Komponentbaserad struktur med tjänster (Services) för API-anrop.
+Architecture: Component-based structure with services for API calls.
 
 ## Design & UX
 
-- Styling: Använd Bootstrap för layout och komponenter.
-- Ikoner: Implementera Font Awesome för knappar och navigering.
+- Styling: Use Tailwind for layout and components.
+- Icons: Implement Font Awesome for buttons and navigation.
 
 ## Responsivitet
 
-- Layouten ska anpassa sig efter Desktop, Tablet och Mobil.
-- Kontrollera avstånd (padding/margin) och justering i alla vyer.
-- Extra Utmaning: Knapp för att växla mellan Light Mode och Dark Mode.
-
+- The layout should adapt to Desktop, Tablet, and Mobile.
+- Check spacing (padding/margin) and alignment in all views.                                                                                                                                                                                                                                                                                                                        
 ### General
 - Put useful simple comments in the code do not overengineer the comments  

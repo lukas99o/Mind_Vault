@@ -1,12 +1,18 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+
+import { AuthService } from './services/auth.service';
+import { SeoService } from './services/seo.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('Mind_Vault.Client');
+  protected readonly authService = inject(AuthService);
+  protected readonly currentYear = new Date().getFullYear();
+
+  private readonly seoService = inject(SeoService);
 }

@@ -1,17 +1,17 @@
-## Token-hantering
+## Token handling
 
-- Säker lagring av JWT (LocalStorage eller Cookies).
-- Bifoga token i samtliga headers vid förfrågningar till API:et.
+- Secure storage of JWT (LocalStorage or Cookies).
+- Attach token in all headers for requests to the API.
 
-### Inloggning/Registrering:
+### Login/Registration:
 
-- Sida för att skapa konto.
-- Sida för att logga in.
-- Efter inlogging för användaren vidare till en Hello World sida (för nu gör vi såhär).
+- Page to create an account.
+- Page to log in.
+- After login, redirect the user to a Hello World page (for now, we do it this way).
 
-### Start-sidan (utloggad)
+### Start page (logged out)
 
-- Enkel layout 
-- Välkommen till Mind Vault
-- En hemsida där du kan förvara dina bästa böcker och citat
+- Simple layout 
+- Welcome to Mind Vault
+- A homepage where you can store your best books and quotes
 
