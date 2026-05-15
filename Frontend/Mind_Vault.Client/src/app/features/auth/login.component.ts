@@ -18,7 +18,7 @@ import { AuthService } from '../../services/auth.service';
           <p class="text-sm font-semibold uppercase tracking-[0.28em] text-white/70">Log in</p>
           <h1 class="font-display text-4xl leading-tight">The vault is one step away.</h1>
           <p class="text-sm leading-7 text-white/75">
-            Log in to reach your first protected view. The token is stored locally and sent automatically with future API requests.
+            Log in to reach your protected Books start page. The token is stored locally and sent automatically with future API requests.
           </p>
           <div class="rounded-3xl border border-white/10 bg-white/5 p-5 text-sm leading-7 text-white/75">
             <p class="font-semibold text-white">Current focus</p>
@@ -130,7 +130,7 @@ export class LoginComponent {
       .pipe(finalize(() => this.isSubmitting.set(false)))
       .subscribe({
         next: () => {
-          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/hello';
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/books';
           void this.router.navigateByUrl(returnUrl);
         },
         error: (error: unknown) => {

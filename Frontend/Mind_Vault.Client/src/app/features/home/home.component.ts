@@ -27,7 +27,7 @@ import { AuthService } from '../../services/auth.service';
         <div class="flex flex-col gap-3 sm:flex-row">
           @if (authService.isAuthenticated()) {
             <a
-              routerLink="/hello"
+              routerLink="/books"
               class="inline-flex items-center justify-center gap-2 rounded-full bg-vault-ink px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
             >
               <i class="fa-solid fa-door-open"></i>

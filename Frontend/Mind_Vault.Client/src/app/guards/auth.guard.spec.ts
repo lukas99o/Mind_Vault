@@ -26,18 +26,18 @@ describe('authGuard', () => {
 
   it('redirects unauthenticated users to login', () => {
     const result = TestBed.runInInjectionContext(() =>
-      authGuard({} as never, { url: '/hello' } as never)
+      authGuard({} as never, { url: '/books' } as never)
     );
 
     expect(result instanceof UrlTree).toBeTrue();
-    expect(router.serializeUrl(result as UrlTree)).toBe('/login?returnUrl=%2Fhello');
+    expect(router.serializeUrl(result as UrlTree)).toBe('/login?returnUrl=%2Fbooks');
   });
 
   it('allows navigation when a valid session exists', () => {
     tokenStorage.store(createToken('reader@example.com'), '2099-01-01T00:00:00.000Z');
 
     const result = TestBed.runInInjectionContext(() =>
-      authGuard({} as never, { url: '/hello' } as never)
+      authGuard({} as never, { url: '/books' } as never)
     );
 
     expect(result).toBeTrue();

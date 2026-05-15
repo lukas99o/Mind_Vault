@@ -93,7 +93,7 @@ const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])
 
           <div class="mt-8 rounded-3xl bg-vault-ink p-5 text-sm leading-7 text-white/75">
             <p class="font-semibold text-white">After registration</p>
-            <p class="mt-2">After registering, you will be sent to the login page, sign in, and then land on a protected Hello World page.</p>
+            <p class="mt-2">After registering, you will be sent to the login page, sign in, and then land on your protected Books start page.</p>
           </div>
         </aside>
       </div>

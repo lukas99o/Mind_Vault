@@ -9,11 +9,21 @@
 		color-scheme: light;
 	}
 
+	html.dark {
+		color-scheme: dark;
+	}
+
 	html {
 		min-height: 100%;
 		background:
 			radial-gradient(circle at top, rgba(197, 138, 61, 0.18), transparent 32%),
 			linear-gradient(180deg, #fffaf2 0%, #f6efe5 100%);
+	}
+
+	html.dark {
+		background:
+			radial-gradient(circle at top, rgba(31, 122, 114, 0.25), transparent 36%),
+			linear-gradient(180deg, #111827 0%, #0f172a 100%);
 	}
 
 	body {
@@ -22,6 +32,10 @@
 		font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
 		color: #1e2933;
 		background: transparent;
+	}
+
+	html.dark body {
+		color: #f8fafc;
 	}
 
 	* {

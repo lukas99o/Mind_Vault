@@ -1,50 +1,139 @@
 <div class="relative min-h-screen overflow-hidden">
-  <div class="absolute inset-x-0 top-0 -z-10 h-[32rem] bg-[radial-gradient(circle_at_top_right,_rgba(31,122,114,0.14),_transparent_42%),radial-gradient(circle_at_top_left,_rgba(221,107,77,0.18),_transparent_28%)]"></div>
+  <div class="absolute inset-x-0 top-0 -z-10 h-[34rem] bg-[radial-gradient(circle_at_top_right,_rgba(31,122,114,0.18),_transparent_42%),radial-gradient(circle_at_top_left,_rgba(221,107,77,0.2),_transparent_28%)] dark:bg-[radial-gradient(circle_at_top_right,_rgba(31,122,114,0.2),_transparent_40%),radial-gradient(circle_at_top_left,_rgba(221,107,77,0.18),_transparent_24%)]"></div>
 
   <div class="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8">
-    <header class="rounded-full border border-white/60 bg-white/75 px-4 py-3 shadow-sm backdrop-blur md:px-6">
-      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <a routerLink="/" class="flex items-center gap-3 text-vault-ink">
+    <header class="rounded-[2rem] border border-white/60 bg-white/80 px-4 py-4 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/85 md:px-6">
+      <div class="flex items-center justify-between gap-4">
+        <a routerLink="/" class="flex items-center gap-3 text-vault-ink dark:text-vault-paper" (click)="closeMobileMenu()">
           <span class="flex h-11 w-11 items-center justify-center rounded-full bg-vault-ink text-lg text-white">
             <i class="fa-solid fa-book-bookmark"></i>
           </span>
           <span>
             <span class="block font-display text-2xl leading-none">Mind Vault</span>
-            <span class="block text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">Books. Quotes. Recall.</span>
+            <span class="block text-xs font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">Books. Quotes. Recall.</span>
           </span>
         </a>
 
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <nav class="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-600">
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-vault-ink/15 text-vault-ink transition hover:border-vault-teal hover:text-vault-teal dark:border-slate-600 dark:text-vault-paper"
+            (click)="themeService.toggleMode()"
+            [attr.aria-label]="themeService.isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
+          >
+            <i class="fa-solid" [class.fa-moon]="!themeService.isDarkMode()" [class.fa-sun]="themeService.isDarkMode()"></i>
+          </button>
+
+          <button
+            type="button"
+            class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-vault-ink/15 text-vault-ink transition hover:border-vault-teal hover:text-vault-teal dark:border-slate-600 dark:text-vault-paper md:hidden"
+            (click)="toggleMobileMenu()"
+            aria-label="Toggle menu"
+          >
+            <i class="fa-solid" [class.fa-bars]="!isMobileMenuOpen()" [class.fa-xmark]="isMobileMenuOpen()"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="hidden items-center justify-between gap-6 pt-4 md:flex">
+        <nav class="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-200">
+          @if (authService.isAuthenticated()) {
             <a
-              routerLink="/"
+              routerLink="/books"
               routerLinkActive="bg-vault-ink text-white"
               [routerLinkActiveOptions]="{ exact: true }"
               class="rounded-full px-4 py-2 transition hover:bg-vault-ink/10 hover:text-vault-ink"
             >
+              Books
+            </a>
+            <a
+              routerLink="/quotes"
+              routerLinkActive="bg-vault-ink text-white"
+              class="rounded-full px-4 py-2 transition hover:bg-vault-ink/10 hover:text-vault-ink"
+            >
+              My quotes
+            </a>
+          } @else {
+            <a
+              routerLink="/"
+              routerLinkActive="bg-vault-ink text-white"
+              class="rounded-full px-4 py-2 transition hover:bg-vault-ink/10 hover:text-vault-ink"
+            >
               Home
             </a>
+          }
+        </nav>
 
+        @if (authService.isAuthenticated()) {
+          <div class="flex items-center gap-3 rounded-full border border-vault-ink/10 bg-vault-paper px-4 py-2 text-sm text-vault-ink dark:border-slate-700 dark:bg-slate-800 dark:text-vault-paper">
+            <span class="hidden lg:inline">{{ authService.currentUserEmail() || 'Signed in' }}</span>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 rounded-full bg-vault-ink px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-slate-800"
+              (click)="authService.logout()"
+            >
+              <i class="fa-solid fa-right-from-bracket"></i>
+              Log out
+            </button>
+          </div>
+        } @else {
+          <div class="flex items-center gap-2 text-sm font-semibold">
+            <a
+              routerLink="/login"
+              class="rounded-full border border-vault-ink/15 px-4 py-2 text-vault-ink transition hover:border-vault-teal hover:text-vault-teal dark:border-slate-600 dark:text-vault-paper"
+            >
+              Log in
+            </a>
+            <a
+              routerLink="/register"
+              class="rounded-full bg-vault-ink px-4 py-2 text-white transition hover:bg-slate-800"
+            >
+              Create account
+            </a>
+          </div>
+        }
+      </div>
+
+      @if (isMobileMenuOpen()) {
+        <div class="mt-4 space-y-3 border-t border-vault-ink/10 pt-4 md:hidden dark:border-slate-700">
+          <nav class="grid gap-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
             @if (authService.isAuthenticated()) {
               <a
-                routerLink="/hello"
+                routerLink="/books"
                 routerLinkActive="bg-vault-ink text-white"
-                class="rounded-full px-4 py-2 transition hover:bg-vault-ink/10 hover:text-vault-ink"
+                [routerLinkActiveOptions]="{ exact: true }"
+                class="rounded-2xl px-4 py-3 transition hover:bg-vault-ink/10 hover:text-vault-ink"
+                (click)="closeMobileMenu()"
               >
-                Hello
+                Books
+              </a>
+              <a
+                routerLink="/quotes"
+                routerLinkActive="bg-vault-ink text-white"
+                class="rounded-2xl px-4 py-3 transition hover:bg-vault-ink/10 hover:text-vault-ink"
+                (click)="closeMobileMenu()"
+              >
+                My quotes
               </a>
             } @else {
               <a
+                routerLink="/"
+                class="rounded-2xl px-4 py-3 transition hover:bg-vault-ink/10 hover:text-vault-ink"
+                (click)="closeMobileMenu()"
+              >
+                Home
+              </a>
+              <a
                 routerLink="/login"
-                routerLinkActive="bg-vault-ink text-white"
-                class="rounded-full px-4 py-2 transition hover:bg-vault-ink/10 hover:text-vault-ink"
+                class="rounded-2xl px-4 py-3 transition hover:bg-vault-ink/10 hover:text-vault-ink"
+                (click)="closeMobileMenu()"
               >
                 Log in
               </a>
               <a
                 routerLink="/register"
-                routerLinkActive="bg-vault-ink text-white"
-                class="rounded-full px-4 py-2 transition hover:bg-vault-ink/10 hover:text-vault-ink"
+                class="rounded-2xl bg-vault-ink px-4 py-3 text-white"
+                (click)="closeMobileMenu()"
               >
                 Create account
               </a>
@@ -52,12 +141,12 @@
           </nav>
 
           @if (authService.isAuthenticated()) {
-            <div class="flex items-center gap-3 rounded-full border border-vault-ink/10 bg-vault-paper px-4 py-2 text-sm text-vault-ink">
-              <span class="hidden sm:inline">{{ authService.currentUserEmail() || 'Signed in' }}</span>
+            <div class="space-y-3 rounded-2xl border border-vault-ink/10 bg-vault-paper p-4 text-sm text-vault-ink dark:border-slate-700 dark:bg-slate-800 dark:text-vault-paper">
+              <p>{{ authService.currentUserEmail() || 'Signed in' }}</p>
               <button
                 type="button"
-                class="inline-flex items-center gap-2 rounded-full bg-vault-ink px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-slate-800"
-                (click)="authService.logout()"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-vault-ink px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-slate-800"
+                (click)="authService.logout(); closeMobileMenu()"
               >
                 <i class="fa-solid fa-right-from-bracket"></i>
                 Log out
@@ -65,14 +154,14 @@
             </div>
           }
         </div>
-      </div>
+      }
     </header>
 
     <main class="flex-1 py-10 md:py-14">
       <router-outlet></router-outlet>
     </main>
 
-    <footer class="border-t border-white/60 px-2 py-6 text-sm text-slate-600">
+    <footer class="border-t border-white/60 px-2 py-6 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300">
       <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <p>Mind Vault builds a calm home for books and quotes worth remembering.</p>
         <p>&copy; {{ currentYear }} Mind Vault</p>
