@@ -28,7 +28,7 @@ import { QuotesService } from '../../services/quotes.service';
         >
         <button
           type="submit"
-          class="inline-flex items-center justify-center gap-2 rounded-full bg-vault-ink px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+          class="inline-flex items-center justify-center gap-2 rounded-full bg-vault-ink px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 dark:hover:bg-vault-teal disabled:cursor-not-allowed disabled:opacity-60"
           [disabled]="isSubmittingCreate()"
         >
           <i class="fa-solid" [class.fa-circle-notch]="isSubmittingCreate()" [class.fa-spin]="isSubmittingCreate()" [class.fa-plus]="!isSubmittingCreate()"></i>

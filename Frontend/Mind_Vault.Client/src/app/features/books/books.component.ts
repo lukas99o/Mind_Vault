@@ -19,7 +19,7 @@ import { BooksService } from '../../services/books.service';
 
         <a
           routerLink="/books/new"
-          class="inline-flex items-center justify-center gap-2 rounded-full bg-vault-ink px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
+          class="inline-flex items-center justify-center gap-2 rounded-full bg-vault-ink px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 dark:hover:bg-vault-teal"
         >
           <i class="fa-solid fa-plus"></i>
           Add new book

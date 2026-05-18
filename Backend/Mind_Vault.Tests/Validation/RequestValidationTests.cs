@@ -41,7 +41,11 @@ public sealed class RequestValidationTests
     [Fact]
     public void LoginRequest_WhenEmailAndPasswordAreInvalid_ReturnsValidationErrors()
     {
-        var request = new LoginRequest("not-an-email", "short");
+        var request = new LoginRequest
+        {
+            Email = "not-an-email",
+            Password = "short"
+        };
 
         var validationResults = Validate(request);
 
@@ -52,7 +56,11 @@ public sealed class RequestValidationTests
     [Fact]
     public void RegisterRequest_WhenRequiredFieldsAreMissing_ReturnsValidationErrors()
     {
-        var request = new RegisterRequest(string.Empty, string.Empty);
+        var request = new RegisterRequest
+        {
+            Email = string.Empty,
+            Password = string.Empty
+        };
 
         var validationResults = Validate(request);
 
