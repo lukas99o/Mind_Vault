@@ -21,6 +21,7 @@ export class AuthService {
 
   readonly session = signal<AuthSession | null>(this.tokenStorage.readSession());
   readonly isAuthenticated = computed(() => this.session() !== null);
+  readonly isAdmin = computed(() => this.session()?.roles.includes('Admin') ?? false);
   readonly currentUserEmail = computed(() => this.session()?.email ?? null);
 
   login(request: LoginRequest): Observable<AuthResponse> {

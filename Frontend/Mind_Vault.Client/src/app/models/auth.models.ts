@@ -21,6 +21,7 @@ export interface AuthSession {
   token: string;
   expiresAtUtc: string;
   email: string | null;
+  roles: string[];
 }
 
 export interface ApiErrorResponse {

@@ -3,15 +3,19 @@ import { CanActivateFn, Router } from '@angular/router';
 
 import { AuthService } from '../services/auth.service';
 
-export const startPageGuard: CanActivateFn = () => {
+export const adminGuard: CanActivateFn = (_route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
   if (!authService.ensureValidSession()) {
-    return true;
+    return router.createUrlTree(['/admin/login'], {
+      queryParams: { returnUrl: state.url }
+    });
   }
 
   return authService.isAdmin()
-    ? router.createUrlTree(['/admin/users'])
-    : router.createUrlTree(['/books']);
+    ? true
+    : router.createUrlTree(['/books'], {
+        queryParams: { adminDenied: '1' }
+      });
 };

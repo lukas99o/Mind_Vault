@@ -30,7 +30,7 @@ describe('AuthService', () => {
 
   it('stores the session after a successful login', () => {
     let completed = false;
-    const token = createToken('reader@example.com');
+    const token = createToken('reader@example.com', ['User']);
     const expiresAtUtc = '2099-01-01T00:00:00.000Z';
 
     service.login({ email: 'reader@example.com', password: 'Password123!' }).subscribe(() => {
@@ -44,13 +44,14 @@ describe('AuthService', () => {
 
     expect(completed).toBeTrue();
     expect(service.isAuthenticated()).toBeTrue();
+    expect(service.isAdmin()).toBeFalse();
     expect(service.currentUserEmail()).toBe('reader@example.com');
     expect(localStorage.getItem('mind-vault.auth.token')).toBe(token);
     expect(localStorage.getItem('mind-vault.auth.expires-at')).toBe(expiresAtUtc);
   });
 
   it('clears the session on logout', () => {
-    const token = createToken('reader@example.com');
+    const token = createToken('reader@example.com', ['User']);
 
     spyOn(router, 'navigateByUrl').and.resolveTo(true);
 
@@ -66,10 +67,23 @@ describe('AuthService', () => {
     expect(localStorage.getItem('mind-vault.auth.token')).toBeNull();
     expect(localStorage.getItem('mind-vault.auth.expires-at')).toBeNull();
   });
+
+  it('marks session as admin when role claim includes Admin', () => {
+    const token = createToken('admin@example.com', ['Admin']);
+
+    service.login({ email: 'admin@example.com', password: 'Password123!' }).subscribe();
+
+    httpTestingController
+      .expectOne('https://localhost:7058/api/auth/login')
+      .flush({ token, expiresAtUtc: '2099-01-01T00:00:00.000Z' });
+
+    expect(service.isAuthenticated()).toBeTrue();
+    expect(service.isAdmin()).toBeTrue();
+  });
 });
 
-function createToken(email: string): string {
-  const payload = base64UrlEncode(JSON.stringify({ email }));
+function createToken(email: string, roles: string[]): string {
+  const payload = base64UrlEncode(JSON.stringify({ email, role: roles }));
   return `header.${payload}.signature`;
 }
 

@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { Book } from '../../models/book.models';
 import { BooksService } from '../../services/books.service';
@@ -29,6 +30,12 @@ import { BooksService } from '../../services/books.service';
       @if (errorMessage()) {
         <p class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/40 dark:text-rose-200">
           {{ errorMessage() }}
+        </p>
+      }
+
+      @if (infoMessage()) {
+        <p class="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900/40 dark:bg-amber-950/40 dark:text-amber-200">
+          {{ infoMessage() }}
         </p>
       }
 
@@ -81,13 +88,24 @@ import { BooksService } from '../../services/books.service';
 })
 export class BooksComponent {
   private readonly booksService = inject(BooksService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly books = signal<Book[]>([]);
   protected readonly isLoading = signal(false);
   protected readonly deletingBookId = signal<number | null>(null);
   protected readonly errorMessage = signal('');
+  protected readonly infoMessage = signal('');
 
   constructor() {
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      this.infoMessage.set(
+        params.get('adminDenied') === '1'
+          ? 'Administrator access is required to view that page.'
+          : ''
+      );
+    });
+
     this.loadBooks();
   }
 
